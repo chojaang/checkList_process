@@ -4,21 +4,10 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
 
-    <display-name>Checklist Process</display-name>
+    <display-name>Checklist Dynamic Builder</display-name>
 
     <welcome-file-list>
-        <welcome-file>checklist</welcome-file>
+        <welcome-file>templates</welcome-file>
     </welcome-file-list>
-
-    <servlet>
-        <servlet-name>ChecklistServlet</servlet-name>
-        <servlet-class>com.checklist.servlet.ChecklistServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>ChecklistServlet</servlet-name>
-        <url-pattern>/checklist</url-pattern>
-    </servlet-mapping>
 
 </web-app>

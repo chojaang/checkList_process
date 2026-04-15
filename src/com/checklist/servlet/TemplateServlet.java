@@ -57,6 +57,7 @@ public class TemplateServlet extends HttpServlet {
         template.setId(templateId);
         template.setTitle(req.getParameter("title"));
         template.setPeriod(req.getParameter("period"));
+        template.setSheetJson(req.getParameter("sheetJson"));
 
         String[] itemNames = req.getParameterValues("itemName");
         String[] descriptions = req.getParameterValues("itemDescription");

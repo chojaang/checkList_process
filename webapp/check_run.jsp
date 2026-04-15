@@ -6,6 +6,7 @@
     List<ChecklistTemplate> templates = (List<ChecklistTemplate>) request.getAttribute("templates");
     if (templates == null) templates = new ArrayList<>();
     ChecklistTemplate selectedTemplate = (ChecklistTemplate) request.getAttribute("selectedTemplate");
+    String selectedSheetJson = selectedTemplate != null && selectedTemplate.getSheetJson() != null ? selectedTemplate.getSheetJson() : "";
 %>
 <!doctype html>
 <html lang="ko">
@@ -49,6 +50,12 @@
     <div class="card shadow-sm">
         <div class="card-header"><%=selectedTemplate.getTitle()%> / <%=selectedTemplate.getPeriod()%></div>
         <div class="card-body">
+            <% if (selectedTemplate.getSheetJson() != null && !selectedTemplate.getSheetJson().isEmpty()) { %>
+            <div class="alert alert-secondary small">템플릿 가이드(엑셀형 셀 템플릿) 미리보기</div>
+            <div class="table-responsive mb-3">
+                <table class="table table-bordered bg-white" id="sheetPreviewTable"></table>
+            </div>
+            <% } %>
             <form method="post" action="<%=request.getContextPath()%>/check-run" enctype="multipart/form-data">
                 <input type="hidden" name="templateId" value="<%=selectedTemplate.getId()%>">
 
@@ -95,5 +102,39 @@
     </div>
     <% } %>
 </div>
+<script>
+    const previewRawSheet = `<%=selectedSheetJson.replace("`", "\\`")%>`;
+    if (previewRawSheet && previewRawSheet.trim().length > 0) {
+        try {
+            const state = JSON.parse(previewRawSheet);
+            const table = document.getElementById('sheetPreviewTable');
+            if (table && state && state.cells) {
+                for (let r = 0; r < state.rows; r++) {
+                    const tr = document.createElement('tr');
+                    for (let c = 0; c < state.cols; c++) {
+                        const cell = state.cells[r][c];
+                        if (cell.hidden) continue;
+                        const td = document.createElement('td');
+                        td.rowSpan = cell.rowspan || 1;
+                        td.colSpan = cell.colspan || 1;
+                        td.innerHTML = `<div class="small">${(cell.text || '').replace(/</g, '&lt;')}</div>`;
+                        if (cell.image) {
+                            const img = document.createElement('img');
+                            img.src = cell.image;
+                            img.style.maxWidth = '120px';
+                            img.style.maxHeight = '70px';
+                            img.className = 'mt-1 rounded';
+                            td.appendChild(img);
+                        }
+                        tr.appendChild(td);
+                    }
+                    table.appendChild(tr);
+                }
+            }
+        } catch (e) {
+            console.warn('sheet preview parse error', e);
+        }
+    }
+</script>
 </body>
 </html>

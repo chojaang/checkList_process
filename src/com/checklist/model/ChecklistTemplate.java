@@ -10,6 +10,7 @@ public class ChecklistTemplate {
     private String id;
     private String title;
     private String period;
+    private String sheetJson;
     private List<TemplateItem> items = new ArrayList<>();
 
     public JSONObject toJson() {
@@ -17,6 +18,7 @@ public class ChecklistTemplate {
         obj.put("id", id);
         obj.put("title", title);
         obj.put("period", period);
+        obj.put("sheetJson", sheetJson == null ? "" : sheetJson);
 
         JSONArray itemsArray = new JSONArray();
         for (TemplateItem item : items) {
@@ -31,6 +33,7 @@ public class ChecklistTemplate {
         template.setId(obj.optString("id"));
         template.setTitle(obj.optString("title"));
         template.setPeriod(obj.optString("period"));
+        template.setSheetJson(obj.optString("sheetJson"));
 
         List<TemplateItem> parsedItems = new ArrayList<>();
         JSONArray array = obj.optJSONArray("items");
@@ -73,5 +76,13 @@ public class ChecklistTemplate {
 
     public void setItems(List<TemplateItem> items) {
         this.items = items;
+    }
+
+    public String getSheetJson() {
+        return sheetJson;
+    }
+
+    public void setSheetJson(String sheetJson) {
+        this.sheetJson = sheetJson;
     }
 }
